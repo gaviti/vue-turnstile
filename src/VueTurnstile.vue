@@ -41,6 +41,16 @@ const props = defineProps({
     required: false,
     default: 295 * 1000,
   },
+  recaptchaCompat: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  explicitRender: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
 });
 
 const emit = defineEmits(['verified', 'rendered']);
@@ -122,7 +132,7 @@ const onRender = () => {
 const initTurnstile = () => {
   const script: HTMLScriptElement = document.createElement('script');
 
-  script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?compat=recaptcha&render=explicit&onload=onloadTurnstileCallback ';
+  script.src = `https://challenges.cloudflare.com/turnstile/v0/api.js?${props.recaptchaCompat ? 'compat=recaptcha' : ''}${props.explicitRender ? '&render=explicit': ''}&onload=onloadTurnstileCallback`;
   script.async = true;
   script.defer = true;
 
