@@ -15,6 +15,13 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - name: Install dependencies and build 🔧
         run: npm ci && npm run build
+  publish:
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/master' }}
+    needs: [build]
+    steps:
+      - name: Semantic Release
+        run: npm run semantic-release
       - name: Publish package on NPM 📦
         run: npm publish
         env:
