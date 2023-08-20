@@ -13,7 +13,7 @@ export default defineConfig({
         './src/index.ts'
       ),
       name: 'VueTurnstile',
-      fileName: 'vue-turnstile',
+      fileName: (format) => `vue-turnstile.${format}.js`,
     },
     rollupOptions: {
       external: ['vue'],
