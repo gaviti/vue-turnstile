@@ -6,12 +6,12 @@ A Vue 2.x component wrapper for [Cloudflare's Turnstile](https://developers.clou
 
 ### NPM
 ```bash
-npm install vue-turnstile
+npm install @gaviti/vue-turnstile
 ```
 
 ### Yarn
 ```bash
-yarn add vue-turnstile
+yarn add @gaviti/vue-turnstile
 ```
 
 ## Usage
