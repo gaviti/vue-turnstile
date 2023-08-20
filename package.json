@@ -21,7 +21,7 @@
   },
   "scripts": {
     "build": "rimraf dist && vite build && vue-tsc --emitDeclarationOnly",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release --branches master"
   },
   "homepage": "https://github.com/gaviti/vue-turnstile",
   "author": {
