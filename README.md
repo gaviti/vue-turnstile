@@ -48,7 +48,8 @@ export default {
 | theme            | `'light' \| 'dark' \| 'auto'` | Widget theme                                                                                     | No       | `'auto'`      |
 | size             | `'normal' \| 'compact'`       | Widget size                                                                                      | No       | `'normal'`    |
 | position         | `'left' \| 'right'`           | Widget position (fixed to left or right)                                                         | No       | `undefined`   |
-| reset-timeout    | `Number`                      | Refresh the token after some time (in milliseconds)                                              | No       | `295000`      |
+| auto-reset       | `Boolean`                     | Allow to refresh the token after some time (in milliseconds)                                     | No       | `false`       |
+| reset-timeout    | `Number`                      | Refresh the token after some time (in milliseconds) * requires auto-reset to be true             | No       | `295000`      |
 | recaptcha-compat | `Boolean`                     | Adds recaptcha compatibility layer                                                               | No       | `false`       |
 | explicit-render  | `Boolean`                     | Renders the widget explicitly                                                                    | No       | `false`       |
 
@@ -58,6 +59,7 @@ export default {
 | --------------- | ----------------- |
 | `render()`      | Render the widget |
 | `reset()`       | Reset the widget  |
+| `remove()`      | Remove the widget |
 
 ## Events
 

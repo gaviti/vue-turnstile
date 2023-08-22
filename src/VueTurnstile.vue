@@ -36,6 +36,11 @@ const props = defineProps({
     required: false,
     default: undefined,
   },
+  autoReset: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
   resetTimeout: {
     type: Number,
     required: false,
@@ -61,6 +66,12 @@ const observer = ref<MutationObserver | null>(null);
 const onReset = () => {
   if (widgetId.value) {
     window.turnstile.reset(widgetId.value);
+  }
+};
+
+const onRemove = () => {
+  if (widgetId.value) {
+    window.turnstile.remove(widgetId.value);
   }
 };
 
@@ -110,9 +121,13 @@ const onRender = () => {
     callback: (response: any) => {
       emit('verified', response);
 
-      setTimeout(() => {
-        onReset();
-      }, props.resetTimeout);
+      onRemove();
+
+      if (props.autoReset) {
+        setTimeout(() => {
+          onReset();
+        }, props.resetTimeout);
+      }
     },
     expiredCallback: () => {
       onReset();
