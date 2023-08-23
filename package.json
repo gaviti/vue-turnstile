@@ -17,9 +17,6 @@
       "require": "./dist/vue-turnstile.umd.cjs"
     }
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  },
   "scripts": {
     "build": "rimraf dist && vite build && vue-tsc --emitDeclarationOnly",
     "semantic-release": "semantic-release",
