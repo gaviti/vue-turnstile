@@ -1,8 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "@gaviti/vue-turnstile",
-  "version": "0.0.6",
-  "description": "A Vue 2.7.x component wrapper for Cloudflare's Turnstile",
+  "version": "0.0.7",
+  "private": true,
+  "description": "A Vue 2.7.14 component wrapper for Cloudflare's Turnstile",
   "type": "module",
   "files": [
     "dist"
@@ -44,10 +45,10 @@
     "vue": "^2.7.14"
   },
   "devDependencies": {
-    "@types/node": "^20.5.3",
+    "@types/node": "^20.5.7",
     "@vitejs/plugin-vue2": "^2.2.0",
     "rimraf": "^5.0.1",
-    "typescript": "^5.1.6",
+    "typescript": "^5.2.2",
     "vite": "^4.4.9",
     "vue-tsc": "^1.8.8"
   }

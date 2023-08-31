@@ -1,6 +1,6 @@
 # Vue Turnstile
 
-A Vue 2.7.x component wrapper for [Cloudflare's Turnstile](https://developers.cloudflare.com/turnstile/)
+A Vue 2.7.14 component wrapper for [Cloudflare's Turnstile](https://developers.cloudflare.com/turnstile/)
 
 ## Installation
 
