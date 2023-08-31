@@ -2,7 +2,6 @@
   "$schema": "https://json.schemastore.org/package",
   "name": "@gaviti/vue-turnstile",
   "version": "0.0.7",
-  "private": true,
   "description": "A Vue 2.7.14 component wrapper for Cloudflare's Turnstile",
   "type": "module",
   "files": [
