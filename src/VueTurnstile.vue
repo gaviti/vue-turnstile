@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { ref, onBeforeMount, onMounted, onBeforeUnmount } from 'vue';
-import type { PropType } from 'vue';
+import { ref, onBeforeMount, onMounted, onBeforeUnmount, defineExpose } from "vue";
+import emitter from "tiny-emitter/instance";
+
+import type { PropType } from "vue";
 
 declare global {
   interface Window {
@@ -14,7 +16,7 @@ type Styles = {
   bottom: string;
   zIndex: string;
   [key: string]: string;
-}
+};
 
 const props = defineProps({
   siteKey: {
@@ -22,17 +24,17 @@ const props = defineProps({
     required: true,
   },
   theme: {
-    type: String as PropType<'light' | 'dark' | 'auto'>,
+    type: String as PropType<"light" | "dark" | "auto">,
     required: false,
-    default: 'auto',
+    default: "auto",
   },
   size: {
-    type: String as PropType<'compact' | 'normal'>,
+    type: String as PropType<"compact" | "normal">,
     required: false,
-    default: 'normal',
+    default: "normal",
   },
   position: {
-    type: String as PropType<'left' | 'right'>,
+    type: String as PropType<"left" | "right">,
     required: false,
     default: undefined,
   },
@@ -58,7 +60,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['verified', 'rendered']);
+const emit = defineEmits(["verified", "rendered"]);
 
 const widgetId = ref<string | null>(null);
 const observer = ref<MutationObserver | null>(null);
@@ -79,31 +81,47 @@ const onLoadRender = () => {
   window.onloadTurnstileCallback = () => {
     onRender();
   };
-}
+};
+
+const onGenerateNewToken = () => {
+  return new Promise((resolve) => {
+    const verificationHandler = (token: string) => {
+      emitter.$off("verified", verificationHandler);
+
+      resolve(token);
+    };
+
+    emitter.$on("verified", verificationHandler);
+
+    onRender();
+  });
+};
 
 const initObserver = () => {
-  const iframe = document.getElementById(widgetId.value as string) as HTMLIFrameElement;
+  const iframe = document.getElementById(
+    widgetId.value as string,
+  ) as HTMLIFrameElement;
   const turnstileBox: HTMLElement = iframe!.parentNode as HTMLElement;
 
   if (turnstileBox && iframe && !observer.value) {
     const observerConfig = {
       attributes: true,
-      attributeFilter: ['style'],
+      attributeFilter: ["style"],
     };
 
     const observerCallback = () => {
       const styles: Styles = {
-        position: 'fixed',
-        bottom: '5px',
-        zIndex: '1000',
+        position: "fixed",
+        bottom: "5px",
+        zIndex: "1000",
       };
 
-      styles[props.position! as string] = '5px';
+      styles[props.position! as string] = "5px";
 
       Object.assign(iframe.style, styles);
 
       setTimeout(() => {
-        iframe.style.display = 'none';
+        iframe.style.display = "none";
       }, 5000);
     };
 
@@ -114,12 +132,12 @@ const initObserver = () => {
 };
 
 const onRender = () => {
-  widgetId.value = window.turnstile.render('.cf-turnstile', {
+  widgetId.value = window.turnstile.render(".cf-turnstile", {
     sitekey: props.siteKey,
     theme: props.theme,
     size: props.size,
     callback: (response: any) => {
-      emit('verified', response);
+      emit("verified", response);
 
       onRemove();
 
@@ -141,13 +159,17 @@ const onRender = () => {
     initObserver();
   }
 
-  emit('rendered');
+  emit("rendered");
 };
 
 const initTurnstile = () => {
-  const script: HTMLScriptElement = document.createElement('script');
+  const script: HTMLScriptElement = document.createElement("script");
 
-  script.src = `https://challenges.cloudflare.com/turnstile/v0/api.js?${props.recaptchaCompat ? 'compat=recaptcha' : ''}${props.explicitRender ? '&render=explicit': ''}&onload=onloadTurnstileCallback`;
+  script.src = `https://challenges.cloudflare.com/turnstile/v0/api.js?${
+    props.recaptchaCompat ? "compat=recaptcha" : ""
+  }${
+    props.explicitRender ? "&render=explicit" : ""
+  }&onload=onloadTurnstileCallback`;
   script.async = true;
   script.defer = true;
 
@@ -170,6 +192,10 @@ onBeforeUnmount(() => {
   if (observer.value) {
     observer.value.disconnect();
   }
+});
+
+defineExpose({
+  onGenerateNewToken,
 });
 </script>
 
