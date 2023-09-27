@@ -85,6 +85,7 @@ const onReset = () => {
 const onRemove = () => {
   if (widgetId.value) {
     window.turnstile.remove(widgetId.value);
+    widgetId.value = null;
   }
 };
 
@@ -203,6 +204,8 @@ onBeforeUnmount(() => {
   if (observer.value) {
     observer.value.disconnect();
   }
+
+  onRemove();
 });
 
 defineExpose({
