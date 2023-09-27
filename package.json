@@ -1,18 +1,17 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "@gaviti/vue-turnstile",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A Vue 2.7.14 component wrapper for Cloudflare's Turnstile",
   "type": "module",
   "files": [
     "dist"
   ],
-  "main": "./dist/vue-turnstile.umd.cjs",
-  "module": "./dist/vue-turnstile.js",
+  "main": "./dist/vue-turnstile.umd.js",
   "types": "./dist/VueTurnstile.vue.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/vue-turnstile.js",
+      "import": "./dist/vue-turnstile.mjs",
       "require": "./dist/vue-turnstile.umd.js"
     }
   },
