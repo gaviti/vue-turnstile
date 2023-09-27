@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import { ref, onBeforeMount, onMounted, onBeforeUnmount, defineExpose } from "vue";
+import {
+  ref,
+  onBeforeMount,
+  onMounted,
+  onBeforeUnmount,
+  defineExpose,
+} from "vue";
 import emitter from "tiny-emitter/instance";
 
 import type { PropType } from "vue";
@@ -58,6 +64,11 @@ const props = defineProps({
     required: false,
     default: false,
   },
+  appearance: {
+    type: String as PropType<"always" | "execute" | "interaction-only">,
+    required: false,
+    default: "always",
+  },
 });
 
 const emit = defineEmits(["verified", "rendered"]);
@@ -83,7 +94,7 @@ const onLoadRender = () => {
   };
 };
 
-const onGenerateNewToken = () => {
+const generate = () => {
   return new Promise((resolve) => {
     const verificationHandler = (token: string) => {
       emitter.$off("verified", verificationHandler);
@@ -195,7 +206,7 @@ onBeforeUnmount(() => {
 });
 
 defineExpose({
-  onGenerateNewToken,
+  generate,
 });
 </script>
 

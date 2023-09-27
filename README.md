@@ -54,15 +54,16 @@ export default {
 | reset-timeout    | `Number`                      | Refresh the token after some time (in milliseconds) \* requires auto-reset to be true     | No       | `295000`    |
 | recaptcha-compat | `Boolean`                     | Adds recaptcha compatibility layer                                                        | No       | `false`     |
 | explicit-render  | `Boolean`                     | Renders the widget explicitly                                                             | No       | `false`     |
+| appearance       | `String`                      | Allow to change the appearance                                                            | No       | `always`    |
 
 ## Methods
 
-| Method                 | Description          |
-| ---------------------- | -------------------- |
-| `render()`             | Render the widget    |
-| `reset()`              | Reset the widget     |
-| `remove()`             | Remove the widget    |
-| `onGenerateNewToken()` | Generate a new token |
+| Method       | Description          |
+| ------------ | -------------------- |
+| `render()`   | Render the widget    |
+| `reset()`    | Reset the widget     |
+| `remove()`   | Remove the widget    |
+| `generate()` | Generate a new token |
 
 ## Events
 
