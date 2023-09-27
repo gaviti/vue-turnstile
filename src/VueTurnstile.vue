@@ -73,7 +73,6 @@ const props = defineProps({
 
 const emit = defineEmits(["verified", "rendered"]);
 
-const turnstileDiv = ref<HTMLElement | null>(null);
 const widgetId = ref<string | null>(null);
 const observer = ref<MutationObserver | null>(null);
 
@@ -170,7 +169,7 @@ const onRender = () => {
     },
   };
 
-  widgetId.value = window.turnstile.render(turnstileDiv.value, options);
+  widgetId.value = window.turnstile.render('#cf-turnstile', options);
 
   if (props.position !== undefined) initObserver();
 
@@ -217,5 +216,5 @@ defineExpose({
 </script>
 
 <template>
-  <div ref="turnstileDiv" />
+  <div id="cf-turnstile" />
 </template>
