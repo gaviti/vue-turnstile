@@ -191,7 +191,9 @@ const initTurnstile = () => {
 };
 
 onBeforeMount(() => {
-  initTurnstile();
+  if (window.turnstile === undefined || !window.turnstile) {
+    initTurnstile();
+  }
 });
 
 onMounted(() => {
