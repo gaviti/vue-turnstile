@@ -71,6 +71,12 @@ export default {
 | ----------- | ----------------- |
 | `@verified` | Returns the token |
 
+## Slots
+
+| Name      | Description  |
+| --------- | ------------ |
+| `default` | Default slot |
+
 ## License
 
 MIT License

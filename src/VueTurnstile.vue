@@ -169,7 +169,7 @@ const onRender = () => {
     },
   };
 
-  widgetId.value = window.turnstile.render('#cf-turnstile', options);
+  widgetId.value = window.turnstile.render("#cf-turnstile", options);
 
   if (props.position !== undefined) initObserver();
 
@@ -218,5 +218,7 @@ defineExpose({
 </script>
 
 <template>
-  <div id="cf-turnstile" />
+  <div id="cf-turnstile">
+    <slot />
+  </div>
 </template>
