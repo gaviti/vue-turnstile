@@ -77,7 +77,7 @@ const widgetId = ref<string | null>(null);
 const observer = ref<MutationObserver | null>(null);
 
 const onReset = () => {
-  if (widgetId.value) {
+  if (window.turnstile) {
     window.turnstile.reset(widgetId.value);
   }
 };
@@ -85,6 +85,7 @@ const onReset = () => {
 const onRemove = () => {
   if (widgetId.value) {
     window.turnstile.remove(widgetId.value);
+
     widgetId.value = null;
   }
 };
@@ -148,8 +149,9 @@ const onRender = () => {
     sitekey: props.siteKey,
     theme: props.theme,
     size: props.size,
-    callback: (response: any) => {
-      emit("verified", response);
+    appearance: props.appearance,
+    callback: (token: string) => {
+      emit("verified", token);
 
       onRemove();
 
@@ -176,12 +178,12 @@ const onRender = () => {
 
 const initTurnstile = () => {
   const script: HTMLScriptElement = document.createElement("script");
+  const turnstileSrc = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+  const callback = "onloadTurnstileCallback";
+  const compat = props.recaptchaCompat ? "&compat=recaptcha" : "";
+  const render = props.explicitRender ? "&render=explicit" : "";
 
-  script.src = `https://challenges.cloudflare.com/turnstile/v0/api.js?${
-    props.recaptchaCompat ? "compat=recaptcha" : ""
-  }${
-    props.explicitRender ? "&render=explicit" : ""
-  }&onload=onloadTurnstileCallback`;
+  script.src = `${turnstileSrc}?onload=${callback}${compat}${render}`;
   script.async = true;
   script.defer = true;
 
