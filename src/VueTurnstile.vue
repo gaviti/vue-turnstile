@@ -73,6 +73,7 @@ const props = defineProps({
 
 const emit = defineEmits(["verified", "rendered"]);
 
+const turnstileDiv = ref<HTMLElement | null>(null);
 const widgetId = ref<string | null>(null);
 const observer = ref<MutationObserver | null>(null);
 
@@ -145,7 +146,7 @@ const initObserver = () => {
 };
 
 const onRender = () => {
-  widgetId.value = window.turnstile.render(".cf-turnstile", {
+  const options = {
     sitekey: props.siteKey,
     theme: props.theme,
     size: props.size,
@@ -167,11 +168,11 @@ const onRender = () => {
     errorCallback: (error: any) => {
       console.error(`Error callback: ${error}`);
     },
-  });
+  };
 
-  if (props.position !== undefined) {
-    initObserver();
-  }
+  widgetId.value = window.turnstile.render(turnstileDiv.value, options);
+
+  if (props.position !== undefined) initObserver();
 
   emit("rendered");
 };
@@ -216,5 +217,5 @@ defineExpose({
 </script>
 
 <template>
-  <div class="cf-turnstile" :data-sitekey="siteKey" />
+  <div ref="turnstileDiv" />
 </template>
