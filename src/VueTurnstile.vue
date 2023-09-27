@@ -71,7 +71,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["verified", "rendered"]);
+const emit = defineEmits(["verified", "rendering", "rendered"]);
 
 const widgetId = ref<string | null>(null);
 const observer = ref<MutationObserver | null>(null);
@@ -197,6 +197,8 @@ onBeforeMount(() => {
 });
 
 onMounted(() => {
+  emit("rendering");
+
   if (window.turnstile === undefined || !window.turnstile) {
     onLoadRender();
   } else {

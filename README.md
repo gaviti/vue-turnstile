@@ -67,9 +67,11 @@ export default {
 
 ## Events
 
-| Name        | Description       |
-| ----------- | ----------------- |
-| `@verified` | Returns the token |
+| Name         | Description                                    |
+| ------------ | ---------------------------------------------- |
+| `@verified`  | Returns the token                              |
+| `@rendering` | Emitted on mounted (returns nothing)           |
+| `@rendered`  | Emitted at the end of render (returns nothing) |
 
 ## Slots
 
