@@ -1,13 +1,4 @@
-<script setup lang="ts">
-import {
-  ref,
-  onBeforeMount,
-  onMounted,
-  onBeforeUnmount,
-  defineExpose,
-} from "vue";
-import emitter from "tiny-emitter/instance";
-
+<script lang="ts">
 import type { PropType } from "vue";
 
 declare global {
@@ -24,202 +15,187 @@ type Styles = {
   [key: string]: string;
 };
 
-const props = defineProps({
-  siteKey: {
-    type: String,
-    required: true,
+export default {
+  name: "VueTurnstile",
+  props: {
+    siteKey: {
+      type: String,
+      required: true,
+    },
+    theme: {
+      type: String as PropType<"light" | "dark" | "auto">,
+      required: false,
+      default: "auto",
+    },
+    size: {
+      type: String as PropType<"compact" | "normal">,
+      required: false,
+      default: "normal",
+    },
+    position: {
+      type: String as PropType<"left" | "right">,
+      required: false,
+      default: undefined,
+    },
+    autoReset: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    resetTimeout: {
+      type: Number,
+      required: false,
+      default: 295 * 1000,
+    },
+    recaptchaCompat: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    explicitRender: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    appearance: {
+      type: String as PropType<"always" | "execute" | "interaction-only">,
+      required: false,
+      default: "always",
+    },
   },
-  theme: {
-    type: String as PropType<"light" | "dark" | "auto">,
-    required: false,
-    default: "auto",
-  },
-  size: {
-    type: String as PropType<"compact" | "normal">,
-    required: false,
-    default: "normal",
-  },
-  position: {
-    type: String as PropType<"left" | "right">,
-    required: false,
-    default: undefined,
-  },
-  autoReset: {
-    type: Boolean,
-    required: false,
-    default: false,
-  },
-  resetTimeout: {
-    type: Number,
-    required: false,
-    default: 295 * 1000,
-  },
-  recaptchaCompat: {
-    type: Boolean,
-    required: false,
-    default: false,
-  },
-  explicitRender: {
-    type: Boolean,
-    required: false,
-    default: false,
-  },
-  appearance: {
-    type: String as PropType<"always" | "execute" | "interaction-only">,
-    required: false,
-    default: "always",
-  },
-});
-
-const emit = defineEmits(["verified", "rendering", "rendered"]);
-
-const widgetId = ref<string | null>(null);
-const observer = ref<MutationObserver | null>(null);
-
-const onReset = () => {
-  if (window.turnstile) {
-    window.turnstile.reset(widgetId.value);
-  }
-};
-
-const onRemove = () => {
-  if (widgetId.value) {
-    window.turnstile.remove(widgetId.value);
-
-    widgetId.value = null;
-  }
-};
-
-const onLoadRender = () => {
-  window.onloadTurnstileCallback = () => {
-    onRender();
-  };
-};
-
-const onExecute = () => {
-  return new Promise((resolve) => {
-    const verificationHandler = (token: string) => {
-      emitter.off("verified", verificationHandler);
-
-      resolve(token);
+  data() {
+    return {
+      widgetId: null as string | null,
+      observer: null as MutationObserver | null,
     };
-
-    emitter.on("verified", verificationHandler);
-
-    onRender();
-  });
-};
-
-const initObserver = () => {
-  const iframe = document.getElementById(
-    widgetId.value as string,
-  ) as HTMLIFrameElement;
-  const turnstileBox: HTMLElement = iframe!.parentNode as HTMLElement;
-
-  if (turnstileBox && iframe && !observer.value) {
-    const observerConfig = {
-      attributes: true,
-      attributeFilter: ["style"],
-    };
-
-    const observerCallback = () => {
-      const styles: Styles = {
-        position: "fixed",
-        bottom: "5px",
-        zIndex: "1000",
-      };
-
-      styles[props.position! as string] = "5px";
-
-      Object.assign(iframe.style, styles);
-
-      setTimeout(() => {
-        iframe.style.display = "none";
-      }, 5000);
-    };
-
-    observer.value = new MutationObserver(observerCallback);
-
-    observer.value.observe(iframe, observerConfig);
-  }
-};
-
-const onRender = () => {
-  const options = {
-    sitekey: props.siteKey,
-    theme: props.theme,
-    size: props.size,
-    appearance: props.appearance,
-    callback: (token: string) => {
-      emit("verified", token);
-
-      onRemove();
-
-      if (props.autoReset) {
-        setTimeout(() => {
-          onReset();
-        }, props.resetTimeout);
+  },
+  methods: {
+    onReset() {
+      if (window.turnstile) {
+        window.turnstile.reset(this.widgetId);
       }
     },
-    expiredCallback: () => {
-      onReset();
+    onRemove() {
+      if (this.widgetId) {
+        window.turnstile.remove(this.widgetId);
+
+        this.widgetId = null;
+      }
     },
-    errorCallback: (error: any) => {
-      console.error(`Error callback: ${error}`);
+    async onExecute() {
+      return new Promise((resolve) => {
+        const verificationHandler = (token: string) => {
+          this.$off("verified", verificationHandler);
+
+          resolve(token);
+        };
+
+        this.$on("verified", verificationHandler);
+
+        this.onRender();
+      });
     },
-  };
+    onRender() {
+      const options = {
+        sitekey: this.siteKey,
+        theme: this.theme,
+        size: this.size,
+        appearance: this.appearance,
+        callback: (token: string) => {
+          this.$emit("verified", token);
 
-  widgetId.value = window.turnstile.render("#cf-turnstile", options);
+          this.onRemove();
 
-  if (props.position !== undefined) initObserver();
+          if (this.autoReset) {
+            setTimeout(() => {
+              this.onReset();
+            }, this.resetTimeout);
+          }
+        },
+        expiredCallback: () => {
+          this.onReset();
+        },
+        errorCallback: (error: any) => {
+          console.error(`Error callback: ${error}`);
+        },
+      };
 
-  emit("rendered");
+      this.widgetId = window.turnstile.render("#cf-turnstile", options);
+
+      if (this.position !== undefined) this.initObserver();
+
+      this.$emit("rendered");
+    },
+    onLoadRender() {
+      window.onloadTurnstileCallback = () => {
+        this.onRender();
+      };
+    },
+    initObserver() {
+      const iframe = document.getElementById(
+        this.widgetId as string,
+      ) as HTMLIFrameElement;
+      const turnstileBox: HTMLElement = iframe!.parentNode as HTMLElement;
+
+      if (turnstileBox && iframe && !this.observer) {
+        const observerConfig = {
+          attributes: true,
+          attributeFilter: ["style"],
+        };
+
+        const observerCallback = () => {
+          const styles: Styles = {
+            position: "fixed",
+            bottom: "5px",
+            zIndex: "1000",
+          };
+
+          styles[this.position! as string] = "5px";
+
+          Object.assign(iframe.style, styles);
+
+          setTimeout(() => {
+            iframe.style.display = "none";
+          }, 5000);
+        };
+
+        this.observer = new MutationObserver(observerCallback);
+
+        this.observer.observe(iframe, observerConfig);
+      }
+    },
+    initTurnstile() {
+      const script: HTMLScriptElement = document.createElement("script");
+      const turnstileSrc =
+        "https://challenges.cloudflare.com/turnstile/v0/api.js";
+      const callback = "onloadTurnstileCallback";
+      const compat = this.recaptchaCompat ? "&compat=recaptcha" : "";
+      const render = this.explicitRender ? "&render=explicit" : "";
+
+      script.src = `${turnstileSrc}?onload=${callback}${compat}${render}`;
+      script.async = true;
+      script.defer = true;
+
+      document.head.appendChild(script);
+    },
+  },
+  beforeMount() {
+    this.$emit("rendering");
+
+    if (window.turnstile === undefined || !window.turnstile) {
+      this.onLoadRender();
+    } else {
+      this.onRender();
+    }
+  },
+  beforeDestroy() {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+
+    this.onRemove();
+  },
 };
-
-const initTurnstile = () => {
-  const script: HTMLScriptElement = document.createElement("script");
-  const turnstileSrc = "https://challenges.cloudflare.com/turnstile/v0/api.js";
-  const callback = "onloadTurnstileCallback";
-  const compat = props.recaptchaCompat ? "&compat=recaptcha" : "";
-  const render = props.explicitRender ? "&render=explicit" : "";
-
-  script.src = `${turnstileSrc}?onload=${callback}${compat}${render}`;
-  script.async = true;
-  script.defer = true;
-
-  document.head.appendChild(script);
-};
-
-onBeforeMount(() => {
-  if (window.turnstile === undefined || !window.turnstile) {
-    initTurnstile();
-  }
-});
-
-onMounted(() => {
-  emit("rendering");
-
-  if (window.turnstile === undefined || !window.turnstile) {
-    onLoadRender();
-  } else {
-    onRender();
-  }
-});
-
-onBeforeUnmount(() => {
-  if (observer.value) {
-    observer.value.disconnect();
-  }
-
-  onRemove();
-});
-
-defineExpose({
-  onExecute,
-  onReset,
-  onRender,
-  onRemove,
-});
 </script>
 
 <template>

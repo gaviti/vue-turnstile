@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "@gaviti/vue-turnstile",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "A Vue 2.7.14 component wrapper for Cloudflare's Turnstile",
   "type": "module",
   "files": [
@@ -41,11 +41,10 @@
     "captcha"
   ],
   "dependencies": {
-    "tiny-emitter": "2.1.0",
     "vue": "^2.7.14"
   },
   "devDependencies": {
-    "@types/node": "^20.7.0",
+    "@types/node": "^20.7.1",
     "@vitejs/plugin-vue2": "^2.2.0",
     "rimraf": "^5.0.5",
     "typescript": "^5.2.2",

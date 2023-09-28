@@ -63,7 +63,7 @@ export default {
 | `onRender()`   | Render the widget    |
 | `onReset()`    | Reset the widget     |
 | `onRemove()`   | Remove the widget    |
-| `onExectute()` | Generate a new token |
+| `onExecute()` | Generate a new token |
 
 ## Events
 
