@@ -99,12 +99,12 @@ const onLoadRender = () => {
 const generate = () => {
   return new Promise((resolve) => {
     const verificationHandler = (token: string) => {
-      emitter.$off("verified", verificationHandler);
+      emitter.off("verified", verificationHandler);
 
       resolve(token);
     };
 
-    emitter.$on("verified", verificationHandler);
+    emitter.on("verified", verificationHandler);
 
     onRender();
   });
