@@ -1,13 +1,7 @@
 <script setup lang="ts">
-import {
-  ref,
-  onBeforeMount,
-  onMounted,
-  onBeforeUnmount,
-  defineExpose,
-} from "vue";
+import { ref, onBeforeMount, onMounted, onBeforeUnmount } from "vue";
 
-import eventBus from './eventBus';
+import eventBus from "./eventBus";
 
 import type { PropType } from "vue";
 
@@ -97,7 +91,7 @@ const onLoadRender = () => {
   };
 };
 
-const onExecute = async (): Promise<string> => {
+const onExecute = (): Promise<string> => {
   return new Promise((resolve) => {
     const verificationHandler = (token: string) => {
       eventBus.$off("verified", verificationHandler);
