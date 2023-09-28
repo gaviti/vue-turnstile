@@ -6,7 +6,8 @@ import {
   onBeforeUnmount,
   defineExpose,
 } from "vue";
-import emitter from "tiny-emitter/instance";
+
+import eventBus from './eventBus';
 
 import type { PropType } from "vue";
 
@@ -99,12 +100,12 @@ const onLoadRender = () => {
 const onExecute = async (): Promise<string> => {
   return new Promise((resolve) => {
     const verificationHandler = (token: string) => {
-      emitter.off("verified", verificationHandler);
+      eventBus.$off("verified", verificationHandler);
 
       resolve(token);
     };
 
-    emitter.on("verified", verificationHandler);
+    eventBus.$on("verified", verificationHandler);
 
     onRender();
   });
