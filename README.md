@@ -21,7 +21,7 @@ yarn add @gaviti/vue-turnstile
 ```javascript
 <template>
   <div>
-    <vue-turnstile site-key="1x00000000000000000000AA" @verified="token = $event" />
+    <vue-turnstile @verified="token = $event" />
     <div>Token: {{ token }}</div>
   </div>
 </template>
@@ -58,12 +58,12 @@ export default {
 
 ## Methods
 
-| Method       | Description          |
-| ------------ | -------------------- |
-| `render()`   | Render the widget    |
-| `reset()`    | Reset the widget     |
-| `remove()`   | Remove the widget    |
-| `generate()` | Generate a new token |
+| Method         | Description          |
+| -------------- | -------------------- |
+| `onRender()`   | Render the widget    |
+| `onReset()`    | Reset the widget     |
+| `onRemove()`   | Remove the widget    |
+| `onExectute()` | Generate a new token |
 
 ## Events
 

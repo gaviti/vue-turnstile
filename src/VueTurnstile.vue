@@ -96,7 +96,7 @@ const onLoadRender = () => {
   };
 };
 
-const generate = () => {
+const onExecute = () => {
   return new Promise((resolve) => {
     const verificationHandler = (token: string) => {
       emitter.off("verified", verificationHandler);
@@ -215,7 +215,10 @@ onBeforeUnmount(() => {
 });
 
 defineExpose({
-  generate,
+  onExecute,
+  onReset,
+  onRender,
+  onRemove,
 });
 </script>
 
