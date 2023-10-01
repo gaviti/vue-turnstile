@@ -58,12 +58,12 @@ export default {
 
 ## Methods
 
-| Method         | Description          |
-| -------------- | -------------------- |
-| `onRender()`   | Render the widget    |
-| `onReset()`    | Reset the widget     |
-| `onRemove()`   | Remove the widget    |
-| `onExecute()` | Generate a new token |
+| Method      | Description          |
+| ----------- | -------------------- |
+| `render()`  | Render the widget    |
+| `reset()`   | Reset the widget     |
+| `remove()`  | Remove the widget    |
+| `execute()` | Generate a new token |
 
 ## Events
 
