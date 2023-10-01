@@ -1,9 +1,13 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "@gaviti/vue-turnstile",
-  "version": "0.3.3",
-  "description": "A Vue 2.7.14 component wrapper for Cloudflare's Turnstile",
-  "type": "module",
+  "version": "0.4.0",
+  "license": "MIT",
+  "author": {
+    "name": "Gaviti R&D",
+    "email": "tech@gaviti.com",
+    "url": "https://gaviti.com"
+  },
   "files": [
     "dist"
   ],
@@ -12,26 +16,26 @@
   "types": "./dist/VueTurnstile.vue.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/VueTurnstile.vue.d.ts",
       "import": "./dist/vue-turnstile.js",
       "require": "./dist/vue-turnstile.umd.js"
     }
   },
-  "scripts": {
-    "build": "rimraf dist && vite build && vue-tsc --emitDeclarationOnly"
+  "engines": {
+    "node": "^14.18.0 || >= 16.0.0"
   },
-  "homepage": "https://github.com/gaviti/vue-turnstile",
-  "author": {
-    "name": "Gaviti R&D",
-    "email": "tech@gaviti.com",
-    "url": "https://gaviti.com"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gaviti/vue-turnstile.git"
   },
   "bugs": {
     "url": "https://github.com/gaviti/vue-turnstile/issues"
   },
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/gaviti/vue-turnstile.git"
+  "homepage": "https://github.com/gaviti/vue-turnstile",
+  "description": "A Vue 2.7.14 component wrapper for Cloudflare's Turnstile",
+  "type": "module",
+  "scripts": {
+    "build": "rimraf dist && vite build && vue-tsc --emitDeclarationOnly"
   },
   "keywords": [
     "vue",
@@ -44,7 +48,7 @@
     "vue": "^2.7.14"
   },
   "devDependencies": {
-    "@types/node": "^20.7.1",
+    "@types/node": "^20.8.0",
     "@vitejs/plugin-vue2": "^2.2.0",
     "rimraf": "^5.0.5",
     "typescript": "^5.2.2",

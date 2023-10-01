@@ -9,7 +9,6 @@ export default defineConfig({
     lib: {
       entry: fileURLToPath(new URL("./src/index.ts", import.meta.url)),
       name: "VueTurnstile",
-      fileName: "vue-turnstile",
     },
     rollupOptions: {
       external: ["vue"],

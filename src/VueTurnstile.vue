@@ -1,8 +1,5 @@
-<script setup lang="ts">
-import { ref, onBeforeMount, onMounted, onBeforeUnmount } from "vue";
-
-import eventBus from "./eventBus";
-
+<script lang="ts">
+import { defineComponent } from "vue";
 import type { PropType } from "vue";
 
 declare global {
@@ -19,201 +16,194 @@ type Styles = {
   [key: string]: string;
 };
 
-const props = defineProps({
-  siteKey: {
-    type: String,
-    required: true,
+export default defineComponent({
+  name: "VueTurnstile",
+  props: {
+    siteKey: {
+      type: String,
+      required: true,
+    },
+    theme: {
+      type: String as PropType<"light" | "dark" | "auto">,
+      required: false,
+      default: "auto",
+    },
+    size: {
+      type: String as PropType<"compact" | "normal">,
+      required: false,
+      default: "normal",
+    },
+    position: {
+      type: String as PropType<"left" | "right">,
+      required: false,
+      default: undefined,
+    },
+    autoReset: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    resetTimeout: {
+      type: Number,
+      required: false,
+      default: 295 * 1000,
+    },
+    recaptchaCompat: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    explicitRender: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    appearance: {
+      type: String as PropType<"always" | "execute" | "interaction-only">,
+      required: false,
+      default: "always",
+    },
   },
-  theme: {
-    type: String as PropType<"light" | "dark" | "auto">,
-    required: false,
-    default: "auto",
-  },
-  size: {
-    type: String as PropType<"compact" | "normal">,
-    required: false,
-    default: "normal",
-  },
-  position: {
-    type: String as PropType<"left" | "right">,
-    required: false,
-    default: undefined,
-  },
-  autoReset: {
-    type: Boolean,
-    required: false,
-    default: false,
-  },
-  resetTimeout: {
-    type: Number,
-    required: false,
-    default: 295 * 1000,
-  },
-  recaptchaCompat: {
-    type: Boolean,
-    required: false,
-    default: false,
-  },
-  explicitRender: {
-    type: Boolean,
-    required: false,
-    default: false,
-  },
-  appearance: {
-    type: String as PropType<"always" | "execute" | "interaction-only">,
-    required: false,
-    default: "always",
-  },
-});
-
-const emit = defineEmits(["verified", "rendering", "rendered"]);
-
-const widgetId = ref<string | null>(null);
-const observer = ref<MutationObserver | null>(null);
-
-const onReset = () => {
-  if (window.turnstile) {
-    window.turnstile.reset(widgetId.value);
-  }
-};
-
-const onRemove = () => {
-  if (widgetId.value) {
-    window.turnstile.remove(widgetId.value);
-
-    widgetId.value = null;
-  }
-};
-
-const onLoadRender = () => {
-  window.onloadTurnstileCallback = () => {
-    onRender();
-  };
-};
-
-const onExecute = (): Promise<string> => {
-  return new Promise((resolve) => {
-    const verificationHandler = (token: string) => {
-      eventBus.$off("verified", verificationHandler);
-
-      resolve(token);
+  data() {
+    return {
+      widgetId: null as string | null,
+      observer: null as MutationObserver | null,
     };
+  },
+  methods: {
+    initTurnstile() {
+      const script: HTMLScriptElement = document.createElement("script");
+      const turnstileSrc =
+        "https://challenges.cloudflare.com/turnstile/v0/api.js";
+      const callback = "onloadTurnstileCallback";
+      const compat = this.recaptchaCompat ? "&compat=recaptcha" : "";
+      const render = this.explicitRender ? "&render=explicit" : "";
 
-    eventBus.$on("verified", verificationHandler);
+      script.src = `${turnstileSrc}?onload=${callback}${compat}${render}`;
+      script.async = true;
+      script.defer = true;
 
-    onRender();
-  });
-};
+      document.head.appendChild(script);
+    },
+    initObserver() {
+      const iframe = document.getElementById(
+        this.widgetId as string,
+      ) as HTMLIFrameElement;
+      const turnstileBox: HTMLElement = iframe!.parentNode as HTMLElement;
 
-const onRender = () => {
-  const options = {
-    sitekey: props.siteKey,
-    theme: props.theme,
-    size: props.size,
-    appearance: props.appearance,
-    callback: (token: string) => {
-      emit("verified", token);
+      if (turnstileBox && iframe && !this.observer) {
+        const observerConfig = {
+          attributes: true,
+          attributeFilter: ["style"],
+        };
 
-      onRemove();
+        const observerCallback = () => {
+          const styles: Styles = {
+            position: "fixed",
+            bottom: "5px",
+            zIndex: "1000",
+          };
 
-      if (props.autoReset) {
-        setTimeout(() => {
-          onReset();
-        }, props.resetTimeout);
+          styles[this.position! as string] = "5px";
+
+          Object.assign(iframe.style, styles);
+
+          setTimeout(() => {
+            iframe.style.display = "none";
+          }, 5000);
+        };
+
+        this.observer = new MutationObserver(observerCallback);
+
+        this.observer.observe(iframe, observerConfig);
       }
     },
-    expiredCallback: () => {
-      onReset();
+    reset() {
+      if (window.turnstile) {
+        window.turnstile.reset(this.widgetId as string);
+      }
     },
-    errorCallback: (error: any) => {
-      console.error(`Error callback: ${error}`);
+    remove() {
+      if (this.widgetId) {
+        window.turnstile.remove(this.widgetId as string);
+
+        this.widgetId = null;
+      }
     },
-  };
+    async execute() {
+      return new Promise((resolve, reject) => {
+        try {
+          const verificationHandler = (token: string) => {
+            this.$off("verified", verificationHandler);
 
-  widgetId.value = window.turnstile.render("#cf-turnstile", options);
+            resolve(token);
+          };
 
-  if (props.position !== undefined) initObserver();
+          this.$on("verified", verificationHandler);
+          this.render();
+        } catch (error) {
+          reject(error);
+        }
+      });
+    },
+    render() {
+      this.widgetId = window.turnstile.render("#cf-turnstile", {
+        sitekey: this.siteKey,
+        theme: this.theme,
+        size: this.size,
+        appearance: this.appearance,
+        callback: (token: string) => {
+          this.$emit("verified", token);
 
-  emit("rendered");
-};
+          this.remove();
 
-const initObserver = () => {
-  const iframe = document.getElementById(
-    widgetId.value as string,
-  ) as HTMLIFrameElement;
-  const turnstileBox: HTMLElement = iframe!.parentNode as HTMLElement;
+          if (this.autoReset) {
+            setTimeout(() => {
+              this.reset();
+            }, this.resetTimeout);
+          }
+        },
+        expiredCallback: (): void => {
+          this.reset();
+        },
+        errorCallback: (error: any): void => {
+          console.error(`Error callback: ${error}`);
+        },
+      });
 
-  if (turnstileBox && iframe && !observer.value) {
-    const observerConfig = {
-      attributes: true,
-      attributeFilter: ["style"],
-    };
+      if (this.position !== undefined) {
+        this.initObserver();
+      }
 
-    const observerCallback = () => {
-      const styles: Styles = {
-        position: "fixed",
-        bottom: "5px",
-        zIndex: "1000",
+      this.$emit("rendered");
+    },
+    onloadTurnstileCallback() {
+      window.onloadTurnstileCallback = () => {
+        this.render();
       };
+    },
+  },
+  beforeMount() {
+    if (window.turnstile === undefined || !window.turnstile) {
+      this.initTurnstile();
+    }
+  },
+  mounted() {
+    this.$emit("rendering");
 
-      styles[props.position! as string] = "5px";
+    if (window.turnstile === undefined || !window.turnstile) {
+      this.onloadTurnstileCallback();
+    } else {
+      this.render();
+    }
+  },
+  beforeDestroy() {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
 
-      Object.assign(iframe.style, styles);
-
-      setTimeout(() => {
-        iframe.style.display = "none";
-      }, 5000);
-    };
-
-    observer.value = new MutationObserver(observerCallback);
-
-    observer.value.observe(iframe, observerConfig);
-  }
-};
-
-const initTurnstile = () => {
-  const script: HTMLScriptElement = document.createElement("script");
-  const turnstileSrc = "https://challenges.cloudflare.com/turnstile/v0/api.js";
-  const callback = "onloadTurnstileCallback";
-  const compat = props.recaptchaCompat ? "&compat=recaptcha" : "";
-  const render = props.explicitRender ? "&render=explicit" : "";
-
-  script.src = `${turnstileSrc}?onload=${callback}${compat}${render}`;
-  script.async = true;
-  script.defer = true;
-
-  document.head.appendChild(script);
-};
-
-onBeforeMount(() => {
-  if (window.turnstile === undefined || !window.turnstile) {
-    initTurnstile();
-  }
-});
-
-onMounted(() => {
-  emit("rendering");
-
-  if (window.turnstile === undefined || !window.turnstile) {
-    onLoadRender();
-  } else {
-    onRender();
-  }
-});
-
-onBeforeUnmount(() => {
-  if (observer.value) {
-    observer.value.disconnect();
-  }
-
-  onRemove();
-});
-
-defineExpose({
-  onExecute,
-  onReset,
-  onRender,
-  onRemove,
+    this.remove();
+  },
 });
 </script>
 
