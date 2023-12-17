@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "@gaviti/vue-turnstile",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "license": "MIT",
   "author": {
     "name": "Gaviti R&D",
@@ -48,11 +48,11 @@
     "vue": "^2.7.15"
   },
   "devDependencies": {
-    "@types/node": "^20.8.7",
-    "@vitejs/plugin-vue2": "^2.2.0",
+    "@types/node": "^20.10.4",
+    "@vitejs/plugin-vue2": "^2.3.1",
     "rimraf": "^5.0.5",
-    "typescript": "^5.2.2",
-    "vite": "^4.5.0",
-    "vue-tsc": "^1.8.19"
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10",
+    "vue-tsc": "^1.8.25"
   }
 }
