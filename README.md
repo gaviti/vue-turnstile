@@ -16,6 +16,10 @@ npm install @gaviti/vue-turnstile
 yarn add @gaviti/vue-turnstile
 ```
 
+## Installation for Vue 3.3.x
+
+For Vue 3.3.x support, you should install a version of this package greater than or equal to 1.0.0. For the code corresponding to version 1.0.0 (Vue 3) and above, please refer to the "next" branch.
+
 ## Usage
 
 ```javascript
