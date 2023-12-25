@@ -2,6 +2,9 @@
 import { defineComponent } from "vue";
 import type { PropType } from "vue";
 
+import type { Appearance, Position, Size, Styles, Theme } from "./types";
+import Emitter from "./emitter";
+
 declare global {
   interface Window {
     turnstile: any;
@@ -9,32 +12,26 @@ declare global {
   }
 }
 
-type Styles = {
-  position: string;
-  bottom: string;
-  zIndex: string;
-  [key: string]: string;
-};
-
 export default defineComponent({
   name: "VueTurnstile",
+  emits: ["rendering", "rendered", "verified"],
   props: {
     siteKey: {
       type: String,
       required: true,
     },
     theme: {
-      type: String as PropType<"light" | "dark" | "auto">,
+      type: String as PropType<Theme>,
       required: false,
       default: "auto",
     },
     size: {
-      type: String as PropType<"compact" | "normal">,
+      type: String as PropType<Size>,
       required: false,
       default: "normal",
     },
     position: {
-      type: String as PropType<"left" | "right">,
+      type: String as PropType<Position>,
       required: false,
       default: undefined,
     },
@@ -59,7 +56,7 @@ export default defineComponent({
       default: false,
     },
     appearance: {
-      type: String as PropType<"always" | "execute" | "interaction-only">,
+      type: String as PropType<Appearance>,
       required: false,
       default: "always",
     },
@@ -134,12 +131,13 @@ export default defineComponent({
       return new Promise((resolve, reject) => {
         try {
           const verificationHandler = (token: string) => {
-            this.$off("verified", verificationHandler);
+            Emitter.off("verified", verificationHandler);
 
             resolve(token);
           };
 
-          this.$on("verified", verificationHandler);
+          Emitter.on("verified", verificationHandler);
+
           this.render();
         } catch (error) {
           reject(error);
@@ -197,7 +195,7 @@ export default defineComponent({
       this.render();
     }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.observer) {
       this.observer.disconnect();
     }

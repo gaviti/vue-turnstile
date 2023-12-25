@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "@gaviti/vue-turnstile",
-  "version": "1.0.0",
+  "version": "0.4.3",
   "license": "MIT",
   "author": {
     "name": "Gaviti R&D",
@@ -45,7 +45,7 @@
     "captcha"
   ],
   "dependencies": {
-    "vue": "^2.7.15"
+    "vue": "^2.7.16"
   },
   "devDependencies": {
     "@types/node": "^20.10.5",
