@@ -20,6 +20,8 @@ yarn add @gaviti/vue-turnstile
 
 For Vue 2.7.x support, you should install a version of this package lower than 1.0.0
 
+For Vue 2.7.x support, you should install a version of this package lower than 1.0.0. Please refer to the "master" branch for the related code.
+
 ## Usage
 
 ```javascript
