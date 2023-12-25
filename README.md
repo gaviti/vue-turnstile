@@ -1,6 +1,6 @@
 # Vue Turnstile
 
-A Vue 2.7.x component wrapper for [Cloudflare's Turnstile](https://developers.cloudflare.com/turnstile/)
+A Vue 3.3.x component wrapper for [Cloudflare's Turnstile](https://developers.cloudflare.com/turnstile/)
 
 ## Installation
 
@@ -15,6 +15,10 @@ npm install @gaviti/vue-turnstile
 ```bash
 yarn add @gaviti/vue-turnstile
 ```
+
+## Installation for Vue 2.7.x
+
+For Vue 2.7.x support, you should install a version of this package lower than 1.0.0
 
 ## Usage
 

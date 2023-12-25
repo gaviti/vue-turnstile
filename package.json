@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "@gaviti/vue-turnstile",
-  "version": "0.4.3",
+  "version": "1.0.0",
   "license": "MIT",
   "author": {
     "name": "Gaviti R&D",
@@ -32,24 +32,24 @@
     "url": "https://github.com/gaviti/vue-turnstile/issues"
   },
   "homepage": "https://github.com/gaviti/vue-turnstile",
-  "description": "A Vue 2.7.x component wrapper for Cloudflare's Turnstile",
+  "description": "A Vue 3.3.x component wrapper for Cloudflare's Turnstile",
   "type": "module",
   "scripts": {
     "build": "rimraf dist && vite build && vue-tsc --emitDeclarationOnly"
   },
   "keywords": [
     "vue",
-    "vue2",
+    "vue3",
     "turnstile",
     "cloudflare",
     "captcha"
   ],
   "dependencies": {
-    "vue": "^2.7.16"
+    "vue": "^3.3.13"
   },
   "devDependencies": {
     "@types/node": "^20.10.5",
-    "@vitejs/plugin-vue2": "^2.3.1",
+    "@vitejs/plugin-vue": "^5.0.0",
     "rimraf": "^5.0.5",
     "typescript": "^5.3.3",
     "vite": "^5.0.10",
