@@ -3,7 +3,6 @@ import { defineComponent } from "vue";
 import type { PropType } from "vue";
 
 import type { Appearance, Position, Size, Styles, Theme } from "./types";
-import Emitter from "./emitter";
 
 declare global {
   interface Window {
@@ -126,23 +125,6 @@ export default defineComponent({
 
         this.widgetId = null;
       }
-    },
-    async execute() {
-      return new Promise((resolve, reject) => {
-        try {
-          const verificationHandler = (token: string) => {
-            Emitter.off("verified", verificationHandler);
-
-            resolve(token);
-          };
-
-          Emitter.on("verified", verificationHandler);
-
-          this.render();
-        } catch (error) {
-          reject(error);
-        }
-      });
     },
     render() {
       this.widgetId = window.turnstile.render("#cf-turnstile", {

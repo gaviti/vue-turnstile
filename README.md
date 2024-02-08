@@ -69,7 +69,6 @@ export default {
 | `render()`  | Render the widget    |
 | `reset()`   | Reset the widget     |
 | `remove()`  | Remove the widget    |
-| `execute()` | Generate a new token |
 
 ## Events
 
