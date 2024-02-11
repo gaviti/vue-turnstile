@@ -67,7 +67,7 @@ export default defineComponent({
     };
   },
   methods: {
-    initTurnstile() {
+    init() {
       const script: HTMLScriptElement = document.createElement("script");
       const turnstileSrc =
         "https://challenges.cloudflare.com/turnstile/v0/api.js";
@@ -157,22 +157,19 @@ export default defineComponent({
 
       this.$emit("rendered");
     },
-    onloadTurnstileCallback() {
-      window.onloadTurnstileCallback = () => {
-        this.render();
-      };
-    },
   },
   beforeMount() {
     if (window.turnstile === undefined || !window.turnstile) {
-      this.initTurnstile();
+      this.init();
     }
   },
   mounted() {
     this.$emit("rendering");
 
     if (window.turnstile === undefined || !window.turnstile) {
-      this.onloadTurnstileCallback();
+      window.onloadTurnstileCallback = () => {
+        this.render();
+      };
     } else {
       this.render();
     }
