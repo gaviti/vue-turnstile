@@ -62,11 +62,12 @@ export default {
 
 ## Methods
 
-| Method      | Description          |
-| ----------- | -------------------- |
-| `render()`  | Render the widget    |
-| `reset()`   | Reset the widget     |
-| `remove()`  | Remove the widget    |
+| Method       | Description           |
+| ------------ | --------------------- |
+| `render()`   | Render the widget     |
+| `reset()`    | Reset the widget      |
+| `remove()`   | Remove the widget     |
+| `getToken()` | Generates a new token |
 
 ## Events
 

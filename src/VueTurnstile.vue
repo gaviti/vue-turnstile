@@ -64,6 +64,7 @@ export default defineComponent({
     return {
       widgetId: null as string | null,
       observer: null as MutationObserver | null,
+      tokenResolver: null as Function | null,
     };
   },
   methods: {
@@ -127,6 +128,17 @@ export default defineComponent({
       }
     },
     render() {
+      if (!window?.turnstile) {
+        this.init();
+
+        window.onloadTurnstileCallback = this.onLoadTurnstile;
+      } else {
+        this.onLoadTurnstile();
+      }
+    },
+    onLoadTurnstile() {
+      this.$emit("rendering");
+
       this.widgetId = window.turnstile.render("#cf-turnstile", {
         sitekey: this.siteKey,
         theme: this.theme,
@@ -134,6 +146,12 @@ export default defineComponent({
         appearance: this.appearance,
         callback: (token: string) => {
           this.$emit("verified", token);
+
+          if (this.tokenResolver) {
+            this.tokenResolver(token);
+
+            this.tokenResolver = null;
+          }
 
           this.remove();
 
@@ -157,39 +175,18 @@ export default defineComponent({
 
       this.$emit("rendered");
     },
-    async execute() {
-      await new Promise((resolve, reject) => {
-        if (!this.widgetId || !window.turnstile) {
-          reject(new Error("Turnstile widget is not initialized."));
+    async getToken() {
+      if (!this.widgetId) {
+        this.render();
+      }
 
-          return;
-        }
-
-        const tempCallbackName = `tempCallback_${String(Date.now())}`;
-
-        (window as any)[tempCallbackName as string] = (token: string) => {
-          resolve(token);
-
-          delete (window as any)[tempCallbackName as string];
-        };
+      return new Promise((resolve) => {
+        this.tokenResolver = resolve;
       });
     },
   },
   beforeMount() {
-    if (window.turnstile === undefined || !window.turnstile) {
-      this.init();
-    }
-  },
-  mounted() {
-    this.$emit("rendering");
-
-    if (window.turnstile === undefined || !window.turnstile) {
-      window.onloadTurnstileCallback = () => {
-        this.render();
-      };
-    } else {
-      this.render();
-    }
+    this.render();
   },
   beforeUnmount() {
     if (this.observer) {
