@@ -157,6 +157,23 @@ export default defineComponent({
 
       this.$emit("rendered");
     },
+    async execute() {
+      await new Promise((resolve, reject) => {
+        if (!this.widgetId || !window.turnstile) {
+          reject(new Error("Turnstile widget is not initialized."));
+
+          return;
+        }
+
+        const tempCallbackName = `tempCallback_${String(Date.now())}`;
+
+        (window as any)[tempCallbackName as string] = (token: string) => {
+          resolve(token);
+
+          delete (window as any)[tempCallbackName as string];
+        };
+      });
+    },
   },
   beforeMount() {
     if (window.turnstile === undefined || !window.turnstile) {
