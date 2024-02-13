@@ -142,7 +142,9 @@ export default defineComponent({
       }
     },
     onLoadTurnstile() {
-      if (!this.isTurnstileLoaded) return;
+      if (this.widgetId) {
+        this.remove();
+      }
 
       this.$emit("rendering");
 
@@ -196,9 +198,7 @@ export default defineComponent({
     this.init();
   },
   mounted() {
-    if (this.isTurnstileLoaded) {
-      this.render();
-    }
+    this.render();
   },
   beforeUnmount() {
     if (this.observer) {
