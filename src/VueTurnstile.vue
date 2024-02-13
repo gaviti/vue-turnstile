@@ -65,20 +65,25 @@ export default defineComponent({
       widgetId: null as string | null,
       observer: null as MutationObserver | null,
       tokenResolver: null as Function | null,
+      isTurnstileLoaded: false,
     };
   },
   methods: {
     init() {
-      const script: HTMLScriptElement = document.createElement("script");
-      const turnstileSrc =
-        "https://challenges.cloudflare.com/turnstile/v0/api.js";
-      const callback = "onloadTurnstileCallback";
-      const compat = this.recaptchaCompat ? "&compat=recaptcha" : "";
-      const render = this.explicitRender ? "&render=explicit" : "";
+      if (document.querySelector("script[src*='turnstile/v0/api.js']")) return;
 
-      script.src = `${turnstileSrc}?onload=${callback}${compat}${render}`;
+      const script = document.createElement("script");
+      const src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+
+      script.src = `${src}?onload=onloadTurnstileCallback&render=explicit`;
       script.async = true;
       script.defer = true;
+
+      window.onloadTurnstileCallback = () => {
+        this.isTurnstileLoaded = true;
+
+        this.onLoadTurnstile();
+      };
 
       document.head.appendChild(script);
     },
@@ -137,6 +142,8 @@ export default defineComponent({
       }
     },
     onLoadTurnstile() {
+      if (!this.isTurnstileLoaded) return;
+
       this.$emit("rendering");
 
       this.widgetId = window.turnstile.render("#cf-turnstile", {
@@ -186,7 +193,12 @@ export default defineComponent({
     },
   },
   beforeMount() {
-    this.render();
+    this.init();
+  },
+  mounted() {
+    if (this.isTurnstileLoaded) {
+      this.render();
+    }
   },
   beforeUnmount() {
     if (this.observer) {
@@ -194,6 +206,13 @@ export default defineComponent({
     }
 
     this.remove();
+  },
+  watch: {
+    isTurnstileLoaded(newVal) {
+      if (newVal) {
+        this.onLoadTurnstile();
+      }
+    },
   },
 });
 </script>
