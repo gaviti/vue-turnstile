@@ -53,12 +53,12 @@ export default {
 | site-key         | `String`                      | Your Turnstile sitekey - [Docs](https://developers.cloudflare.com/turnstile/get-started/) | Yes      | N/A         |
 | theme            | `'light' \| 'dark' \| 'auto'` | Widget theme                                                                              | No       | `'auto'`    |
 | size             | `'normal' \| 'compact'`       | Widget size                                                                               | No       | `'normal'`  |
-| position         | `'left' \| 'right'`           | Widget position (fixed to left or right)                                                  | No       | `undefined` |
 | auto-reset       | `Boolean`                     | Allow to refresh the token after some time (in milliseconds)                              | No       | `false`     |
 | reset-timeout    | `Number`                      | Refresh the token after some time (in milliseconds) \* requires auto-reset to be true     | No       | `295000`    |
 | recaptcha-compat | `Boolean`                     | Adds recaptcha compatibility layer                                                        | No       | `false`     |
 | explicit-render  | `Boolean`                     | Renders the widget explicitly                                                             | No       | `false`     |
-| appearance       | `String`                      | Allow to change the appearance                                                            | No       | `always`    |
+| appearance       | `'always' \| 'execute' \| 'interaction-only'` | Appearance controls when the widget is visible - [Docs](https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#appearance-modes) | No       | `always`    |
+| Language         | `String`                      | Language to display - ISO 639-1 two-letter language code - [Supported languages](https://developers.cloudflare.com/turnstile/reference/supported-languages/) | No       | `auto`    |
 
 ## Methods
 

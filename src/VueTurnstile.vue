@@ -2,7 +2,7 @@
 import { defineComponent } from "vue";
 import type { PropType } from "vue";
 
-import type { Appearance, Position, Size, Styles, Theme } from "./types";
+import type { Appearance, Size, Theme } from "./types";
 import Emitter from "./emitter";
 
 declare global {
@@ -14,7 +14,7 @@ declare global {
 
 export default defineComponent({
   name: "VueTurnstile",
-  emits: ["rendering", "rendered", "verified"],
+  emits: ["rendering", "rendered", "verified", "error"],
   props: {
     siteKey: {
       type: String,
@@ -29,11 +29,6 @@ export default defineComponent({
       type: String as PropType<Size>,
       required: false,
       default: "normal",
-    },
-    position: {
-      type: String as PropType<Position>,
-      required: false,
-      default: undefined,
     },
     autoReset: {
       type: Boolean,
@@ -60,11 +55,15 @@ export default defineComponent({
       required: false,
       default: "always",
     },
+    language: {
+      type: String,
+      required: false,
+      default: "auto",
+    },
   },
   data() {
     return {
       widgetId: null as string | null,
-      observer: null as MutationObserver | null,
     };
   },
   methods: {
@@ -81,39 +80,6 @@ export default defineComponent({
       script.defer = true;
 
       document.head.appendChild(script);
-    },
-    initObserver() {
-      const iframe = document.getElementById(
-        this.widgetId as string,
-      ) as HTMLIFrameElement;
-      const turnstileBox: HTMLElement = iframe!.parentNode as HTMLElement;
-
-      if (turnstileBox && iframe && !this.observer) {
-        const observerConfig = {
-          attributes: true,
-          attributeFilter: ["style"],
-        };
-
-        const observerCallback = () => {
-          const styles: Styles = {
-            position: "fixed",
-            bottom: "5px",
-            zIndex: "1000",
-          };
-
-          styles[this.position! as string] = "5px";
-
-          Object.assign(iframe.style, styles);
-
-          setTimeout(() => {
-            iframe.style.display = "none";
-          }, 5000);
-        };
-
-        this.observer = new MutationObserver(observerCallback);
-
-        this.observer.observe(iframe, observerConfig);
-      }
     },
     reset() {
       if (window.turnstile) {
@@ -150,6 +116,7 @@ export default defineComponent({
         theme: this.theme,
         size: this.size,
         appearance: this.appearance,
+        language: this.language,
         callback: (token: string) => {
           this.$emit("verified", token);
 
@@ -166,12 +133,10 @@ export default defineComponent({
         },
         errorCallback: (error: any): void => {
           console.error(`Error callback: ${error}`);
+
+          this.$emit("error", error);
         },
       });
-
-      if (this.position !== undefined) {
-        this.initObserver();
-      }
 
       this.$emit("rendered");
     },
@@ -196,10 +161,6 @@ export default defineComponent({
     }
   },
   beforeUnmount() {
-    if (this.observer) {
-      this.observer.disconnect();
-    }
-
     this.remove();
   },
 });
