@@ -71,11 +71,12 @@ export default {
 
 ## Events
 
-| Name         | Description                                    |
-| ------------ | ---------------------------------------------- |
-| `@verified`  | Returns the token                              |
-| `@rendering` | Emitted on mounted (returns nothing)           |
-| `@rendered`  | Emitted at the end of render (returns nothing) |
+| Name         | Params | Description                                                                           |
+| ------------ | ------ | ------------------------------------------------------------------------------------- |
+| `@verified`  |        | Returns the token                                                                     |
+| `@rendering` |        | Emitted on mounted (returns nothing)                                                  |
+| `@rendered`  |        | Emitted at the end of render (returns nothing)                                        |
+| `@error`     | `code` | Callback invoked when there is an error (e.g. network error or the challenge failed). |
 
 ## Slots
 
