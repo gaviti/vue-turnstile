@@ -137,10 +137,10 @@ export default defineComponent({
             }, this.resetTimeout);
           }
         },
-        expiredCallback: (): void => {
+        "expired-callback": (): void => {
           this.reset();
         },
-        errorCallback: (error: any): void => {
+        "error-callback": (error: any): void => {
           console.error(`Error callback: ${error}`);
         },
       });
