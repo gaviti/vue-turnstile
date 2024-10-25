@@ -45,7 +45,7 @@
     "captcha"
   ],
   "dependencies": {
-    "vue": "^2.7.16"
+    "vue": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.14.12",
